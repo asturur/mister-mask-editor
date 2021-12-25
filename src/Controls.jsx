@@ -1,30 +1,38 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import TextField from '@material-ui/core/TextField';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import Button from '@material-ui/core/Button';
-import useGenericSetter from './hooks/useGenericSetter';
 import SliderChanger from './components/SliderChanger';
 import { useMaskContext, useActiveObjectsContext, ActiveObjectsContext } from './fabricContext';
-import { fabric } from 'fabric';
 import { useTranslations } from './hooks/useTranslations';
+import clsx from 'clsx';
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
+import BitCheckbox from './components/BitCheckbox';
+
+
 
 
 const Controls = () => {
   const fabricCanvas = useMaskContext();
   const activeObject = useActiveObjectsContext()[0];
   const { t } = useTranslations();
-
-  return <>
-    <List>
-    <ListItem>
-      <TextField label={t('mask width')} value={fabricCanvas?.maskWidth} variant="outlined" />
-      <TextField label={t('mask height')} value={fabricCanvas?.maskHeight} variant="outlined" />
-      <Button variant="contained">
-        {t('OK')}
-      </Button>
-    </ListItem>
-        <ListItem>
+  return <Grid container spacing={2} >
+      <Grid item xs={12} >
+        <TextField label={t('mask width')} value={fabricCanvas?.maskWidth} variant="outlined" />
+        <TextField label={t('mask height')} value={fabricCanvas?.maskHeight} variant="outlined" />
+        <Button variant="contained">
+          {t('OK')}
+        </Button>
+      </Grid>
+      <Grid item xs={2}>
+        <Box display="flex" flexDirection="column">
+          <BitCheckbox color="red" bit={4} />
+          <BitCheckbox color="green" bit={2} />
+          <BitCheckbox color="blue" bit={1} />
+        </Box>
+      </Grid>
+      <Grid item xs={4} >
+        <Box display="flex" flexDirection="column">
           <SliderChanger
             label={t('On intensity')}
             property="onIntensity"
@@ -34,8 +42,6 @@ const Controls = () => {
             max={15}
             value={activeObject?.onIntensity ?? 0}
           />
-        </ListItem>
-        <ListItem>
           <SliderChanger
             label={t('Off intensity')}
             property="offIntensity"
@@ -45,9 +51,9 @@ const Controls = () => {
             max={15}
             value={activeObject?.offIntensity ?? 0}
           />
-        </ListItem>
-    </List>
-  </>
+        </Box>
+      </Grid>
+    </Grid>
 };
 
 const WrappedControls = () => {

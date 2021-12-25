@@ -18,6 +18,7 @@ export const MaskCanvas = ({ setFabricCanvas }) => {
     if (canvasRef.current) {
       const fabricCanvas = new fabric.Canvas(canvasRef.current, {
         enableRetinaScaling: false,
+        skipOffscreen: false,
       });
       fabricCanvas.maskWidth = 8;
       fabricCanvas.maskHeight = 8;

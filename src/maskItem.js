@@ -4,6 +4,7 @@ fabric.ActiveSelection.prototype.controls = {};
 fabric.ActiveSelection.prototype.hasBorders = false;
 fabric.ActiveSelection.prototype.lockMovementX = true;
 fabric.ActiveSelection.prototype.lockMovementY = true;
+fabric.ActiveSelection.prototype.perPixelTargetFind = true;
 
 const MaskItem = fabric.util.createClass(fabric.Object, {
   type: 'maskItem',
@@ -21,6 +22,7 @@ const MaskItem = fabric.util.createClass(fabric.Object, {
   lockMovementY: true,
   borderColor: 'black',
   controls: {},
+  // activeOn: 'up',
 
   cacheProperties: fabric.Object.prototype.cacheProperties.concat('bitValue', 'size', 'onIntensity', 'offIntensity'),
 
@@ -44,7 +46,7 @@ const MaskItem = fabric.util.createClass(fabric.Object, {
   },
 
   drawBar(ctx, color, isOn, position) {
-    const intensityScale = this.size / 16;
+    const intensityScale = this.size / 2 / 16;
     const start = isOn ? - intensityScale * (this.onIntensity + 1) : 0;
     const size = isOn ? intensityScale * (this.onIntensity + 1) : intensityScale * (this.offIntensity + 1)
     ctx.fillStyle = color;

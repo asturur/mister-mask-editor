@@ -8,6 +8,7 @@ import Slider from '@material-ui/core/Slider';
 const useStyle = makeStyles({
   formControl: {
     width: '100%',
+    margin: '16px',
   }
 });
 
@@ -16,12 +17,12 @@ export const SliderChanger = ({ disabled, property, value, label, min, max, step
   const classes = useStyle();
   return (
     <>
-      <FormControl variant="outlined" className={classes.formControl}>
+      <FormControl className={classes.formControl}>
         <InputLabel id={`slider-${property}`}>{label}</InputLabel>
         <Slider
           labelId={`slider-${property}`}
           value={value}
-          onChange={(e) => console.log(e) || genericSetter({ [property]: e.target.value })}
+          onChange={( _, newValue) => genericSetter({ [property]: newValue })}
           label={label}
           min={min}
           max={max}
