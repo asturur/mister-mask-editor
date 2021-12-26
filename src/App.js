@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MaskCanvas } from './MaskCanvas';
 import { PreviewCanvas } from './PreviewCanvas';
 import { MaskCanvasContext, PreviewCanvasContext } from './fabricContext';
+import { updateMaskFilter } from './updateMaskFilter';
 import Controls from './Controls';
 import './maskItem';
+import './maskFilter';
+import { fabric } from 'fabric';
+
 // import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
@@ -28,10 +32,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function PersistentDrawerLeft() {
+export default function App() {
   const classes = useStyles();
   const [maskCanvas, setMaskcanvas] = useState(null);
   const [previewCanvas, setPreviewCanvas] = useState(null);
+  useEffect(() => {
+    if (maskCanvas && previewCanvas) {
+      updateMaskFilter(previewCanvas, maskCanvas);
+    }
+  }, [maskCanvas, previewCanvas]);
+  useEffect(() => {
+    if (!fabric.filterBackend) {
+      fabric.filterBackend = fabric.initFilterBackend();
+    }
+  }, []);
   return (
     <PreviewCanvasContext.Provider value={previewCanvas} >
       <MaskCanvasContext.Provider value={maskCanvas} >

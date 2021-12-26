@@ -20,7 +20,7 @@ export const BitCheckobx = ({ bit, color }) => {
   const activeObjects = useActiveObjectsContext();
   const activeObject = activeObjects[0];
   const genericSetter = useGenericSetter();
-  const checked = activeObject?.bitValue & bit;
+  const checked = !!(activeObject?.bitValue & bit);
   const bitSetter = useCallback(
     () => genericSetter({ bitValue: activeObject.bitValue ^ bit }),
     [bit, activeObject, genericSetter]

@@ -1,11 +1,13 @@
 import React, { useRef, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { fabric } from 'fabric';
+import { setPreviewScaling } from './setPreviewScaling';
 
 const useStyles = makeStyles(() => ({
   container: {
     display: 'flex',
     flexGrow: 1,
+    margin: '8px',
   },
 }));
 
@@ -16,8 +18,18 @@ export const PreviewCanvas = ({ setFabricCanvas }) => {
 
   useEffect(() => {
     if (canvasRef.current) {
-      const fabricCanvas = new fabric.Canvas(canvasRef.current);
-      setFabricCanvas(fabricCanvas);
+      const fabricCanvas = new fabric.StaticCanvas(canvasRef.current, {
+        enableRetinaScaling: false,
+        selection: false,
+      });
+      fabric.Image.fromURL('/ga2genesis.gif', (img) => {
+        img.objectCaching = false;
+        img.strokeWidth = 0;
+        img.imageSmoothing = false;
+        fabricCanvas.add(img);
+        setPreviewScaling(fabricCanvas, 5);
+        setFabricCanvas(fabricCanvas);
+      });
       window.previewCanvas = fabricCanvas;
     }
   }, [setFabricCanvas]);

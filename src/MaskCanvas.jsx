@@ -7,6 +7,7 @@ const useStyles = makeStyles(() => ({
   container: {
     display: 'flex',
     flexGrow: 1,
+    margin: '8px',
   },
 }));
 

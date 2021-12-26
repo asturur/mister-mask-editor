@@ -20,7 +20,6 @@ export const SliderChanger = ({ disabled, property, value, label, min, max, step
       <FormControl className={classes.formControl}>
         <InputLabel id={`slider-${property}`}>{label}</InputLabel>
         <Slider
-          labelId={`slider-${property}`}
           value={value}
           onChange={( _, newValue) => genericSetter({ [property]: newValue })}
           label={label}

@@ -2,15 +2,13 @@ import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import SliderChanger from './components/SliderChanger';
-import { useMaskContext, useActiveObjectsContext, ActiveObjectsContext } from './fabricContext';
+import { useMaskContext, usePreviewContext, useActiveObjectsContext, ActiveObjectsContext } from './fabricContext';
 import { useTranslations } from './hooks/useTranslations';
 // import clsx from 'clsx';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import BitCheckbox from './components/BitCheckbox';
-
-
-
+import { updateMaskFilter } from './updateMaskFilter';
 
 const Controls = () => {
   const fabricCanvas = useMaskContext();
@@ -18,8 +16,8 @@ const Controls = () => {
   const { t } = useTranslations();
   return <Grid container spacing={2} >
       <Grid item xs={12} >
-        <TextField label={t('mask width')} value={fabricCanvas?.maskWidth} variant="outlined" />
-        <TextField label={t('mask height')} value={fabricCanvas?.maskHeight} variant="outlined" />
+        <TextField label={t('mask width')} value={fabricCanvas?.maskWidth ?? 0} variant="outlined" />
+        <TextField label={t('mask height')} value={fabricCanvas?.maskHeight ?? 0} variant="outlined" />
         <Button variant="contained">
           {t('OK')}
         </Button>
@@ -38,7 +36,7 @@ const Controls = () => {
             property="onIntensity"
             min={0}
             step={1}
-            disabled={!activeObject}
+            disabled={!activeObject || activeObject.bitValue === 0}
             max={15}
             value={activeObject?.onIntensity ?? 0}
           />
@@ -47,7 +45,7 @@ const Controls = () => {
             property="offIntensity"
             min={0}
             step={1}
-            disabled={!activeObject}
+            disabled={!activeObject || activeObject.bitValue === 7}
             max={15}
             value={activeObject?.offIntensity ?? 0}
           />
@@ -57,27 +55,33 @@ const Controls = () => {
 };
 
 const WrappedControls = () => {
-  const fabricCanvas = useMaskContext();
+  const maskCanvas = useMaskContext();
+  const previewCanvas = usePreviewContext();
   const [activeObjects, setActiveObjects] = useState([]);
   useEffect(() => {
     const selectionHandler = () => {
-      setActiveObjects([...fabricCanvas.getActiveObjects()]);
+      setActiveObjects([...maskCanvas.getActiveObjects()]);
     };
-    if (fabricCanvas) {
-      fabricCanvas.on('object:propertySet', selectionHandler);
-      fabricCanvas.on('selection:cleared', selectionHandler);
-      fabricCanvas.on('selection:created', selectionHandler);
-      fabricCanvas.on('selection:updated', selectionHandler);
+    const updateFilter = () => {
+      updateMaskFilter(previewCanvas, maskCanvas);
+    };
+    if (maskCanvas) {
+      maskCanvas.on('object:propertySet', selectionHandler);
+      maskCanvas.on('object:propertySet', updateFilter);
+      maskCanvas.on('selection:cleared', selectionHandler);
+      maskCanvas.on('selection:created', selectionHandler);
+      maskCanvas.on('selection:updated', selectionHandler);
     }
     return () => {
-      if (fabricCanvas) {
-        fabricCanvas.off('object:propertySet', selectionHandler);
-        fabricCanvas.off('selection:cleared', selectionHandler);
-        fabricCanvas.off('selection:created', selectionHandler);
-        fabricCanvas.off('selection:updated', selectionHandler);
+      if (maskCanvas) {
+        maskCanvas.off('object:propertySet', selectionHandler);
+        maskCanvas.off('object:propertySet', updateFilter);
+        maskCanvas.off('selection:cleared', selectionHandler);
+        maskCanvas.off('selection:created', selectionHandler);
+        maskCanvas.off('selection:updated', selectionHandler);
       }
     }
-  }, [fabricCanvas])
+  }, [maskCanvas, previewCanvas])
   return (
     <ActiveObjectsContext.Provider value={activeObjects}>
       <Controls />
