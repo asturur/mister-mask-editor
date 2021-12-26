@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { fabric } from 'fabric';
-import { useFabricContext } from './fabricContext';
 
 const useStyles = makeStyles(() => ({
   container: {

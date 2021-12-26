@@ -26,7 +26,7 @@ export const MaskCanvas = ({ setFabricCanvas }) => {
       setFabricCanvas(fabricCanvas);
       window.fabricCanvas = fabricCanvas;
     }
-  }, []);
+  }, [setFabricCanvas]);
 
   return (
     <div ref={containerRef} className={classes.container}>

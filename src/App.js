@@ -5,7 +5,7 @@ import { MaskCanvas } from './MaskCanvas';
 import { PreviewCanvas } from './PreviewCanvas';
 import { MaskCanvasContext, PreviewCanvasContext } from './fabricContext';
 import Controls from './Controls';
-import MaskItem from './maskItem';
+import './maskItem';
 // import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({

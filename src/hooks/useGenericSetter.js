@@ -7,7 +7,7 @@ import { useActiveObjectsContext } from '../fabricContext';
 const useGenericSetter = () => {
   const activeObjects = useActiveObjectsContext();
   return useCallback((properties) => {
-    activeObjects.map((object) => {
+    activeObjects.forEach((object) => {
       object.set({ dirty: true, ...properties });
     });
     const activeObject = activeObjects[0];
