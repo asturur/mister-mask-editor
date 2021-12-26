@@ -51,11 +51,12 @@ export default function App() {
       <MaskCanvasContext.Provider value={maskCanvas} >
         <div className={classes.root}>
           <CssBaseline />
-          <Controls />
+          <Controls
+            maskCanvasComp={<MaskCanvas setFabricCanvas={setMaskcanvas} />}
+          />
           <main
             className={classes.content}
           >
-            <MaskCanvas setFabricCanvas={setMaskcanvas} />
             <PreviewCanvas setFabricCanvas={setPreviewCanvas} />
           </main>
         </div>

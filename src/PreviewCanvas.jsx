@@ -22,7 +22,7 @@ export const PreviewCanvas = ({ setFabricCanvas }) => {
         enableRetinaScaling: false,
         selection: false,
       });
-      fabric.Image.fromURL('/ga2genesis.gif', (img) => {
+      fabric.Image.fromURL('/sonic2genesis.gif', (img) => {
         img.objectCaching = false;
         img.strokeWidth = 0;
         img.imageSmoothing = false;

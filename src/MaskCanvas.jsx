@@ -17,15 +17,15 @@ export const MaskCanvas = ({ setFabricCanvas }) => {
   const classes = useStyles();
   useEffect(() => {
     if (canvasRef.current) {
-      const fabricCanvas = new fabric.Canvas(canvasRef.current, {
+      const maskCanvas = new fabric.Canvas(canvasRef.current, {
         enableRetinaScaling: false,
         skipOffscreen: false,
       });
-      fabricCanvas.maskWidth = 8;
-      fabricCanvas.maskHeight = 8;
-      resizeMaskCanvas(fabricCanvas);
-      setFabricCanvas(fabricCanvas);
-      window.fabricCanvas = fabricCanvas;
+      maskCanvas.maskWidth = 8;
+      maskCanvas.maskHeight = 8;
+      resizeMaskCanvas(maskCanvas);
+      setFabricCanvas(maskCanvas);
+      window.maskCanvas = maskCanvas;
     }
   }, [setFabricCanvas]);
 
