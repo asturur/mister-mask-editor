@@ -44,7 +44,6 @@ export const resizeMaskCanvas = (maskCanvas, newWidth, newHeight) => {
   }
   maskCanvas.clear();
   maskCanvas.add(...maskCanvas.mask);
-  maskCanvas.fire('object:propertySet');
 }
 
 export const updateMaskItems = (maskCanvas, maskLines) => {

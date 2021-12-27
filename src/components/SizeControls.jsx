@@ -15,6 +15,7 @@ export const SizeControls = () => {
     const newWidth = parseInt(width.current.value, 10);
     const newHeight = parseInt(height.current.value, 10);
     resizeMaskCanvas(maskCanvas, newWidth, newHeight);
+    maskCanvas.fire('object:propertySet');
   }, [maskCanvas]);
 
   useEffect(() => {

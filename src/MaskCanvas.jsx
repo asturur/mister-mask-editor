@@ -22,6 +22,7 @@ export const MaskCanvas = ({ setFabricCanvas }) => {
       });
       resizeMaskCanvas(maskCanvas, 6, 4);
       setFabricCanvas(maskCanvas);
+      maskCanvas.fire('object:propertySet');
       window.maskCanvas = maskCanvas;
     }
   }, [setFabricCanvas]);

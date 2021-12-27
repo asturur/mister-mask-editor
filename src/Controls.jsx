@@ -48,7 +48,7 @@ const Controls = ({ maskCanvasComp, maskExportData, fileLoader }) => {
             property="onIntensity"
             min={0}
             step={1}
-            disabled={!activeObject || activeObject.bitValue === 0}
+            disabled={!activeObject}
             max={15}
             value={activeObject?.onIntensity ?? 0}
           />
@@ -57,7 +57,7 @@ const Controls = ({ maskCanvasComp, maskExportData, fileLoader }) => {
             property="offIntensity"
             min={0}
             step={1}
-            disabled={!activeObject || activeObject.bitValue === 7}
+            disabled={!activeObject}
             max={15}
             value={activeObject?.offIntensity ?? 0}
           />
@@ -96,7 +96,7 @@ const WrappedControls = (props) => {
       }
       resizeMaskCanvas(maskCanvas, maskData.maskWidth, maskData.maskHeight);
       updateMaskItems(maskCanvas, maskData.parsedLines);
-      setMaskExportData(getMaskData(maskCanvas));
+      maskCanvas.fire('object:propertySet');
     });
   }, [maskCanvas]);
   useEffect(() => {
