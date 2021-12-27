@@ -15,6 +15,8 @@ const useStyles = makeStyles((theme) => ({
 export const GitHubBrowser = ({ repo, owner }) => {
   const [list, setList] = useState([]);
   const [path, setPath] = useState('Shadow_Masks');
+  const [dataIsLoading, setDataIsLoading] = useState(false);
+
   const isInFolder = path.split('/').length > 1;
   const classes = useStyles();
   const goBack = useCallback(() => {
@@ -33,6 +35,7 @@ export const GitHubBrowser = ({ repo, owner }) => {
       const pathArray = path.split('/');
       pathArray.push(encodeURI(item.name));
       setPath(pathArray.join('/'));
+      setDataIsLoading(true);
     } else if (item.type === 'file') {
       console.log('clicked file', item.name)
     }
@@ -44,6 +47,7 @@ export const GitHubBrowser = ({ repo, owner }) => {
       },
     }).then(({ data }) => {
       setList(data.sort((a,b) => (a.type === 'file' ? 1 : -1)));
+      setDataIsLoading(false);
     }).catch((e) => {
       console.error(e);
     });
@@ -67,7 +71,7 @@ export const GitHubBrowser = ({ repo, owner }) => {
           id: 'select-multiple-native'
         }}
       >
-      {isInFolder && (
+      {isInFolder && !dataIsLoading && (
         <option key="goBack" value="goBack">../</option>
       )}
         {list.map((item) => (
