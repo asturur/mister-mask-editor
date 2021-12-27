@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import React, { useState, useEffect, useCallback } from 'react';
 import SliderChanger from './components/SliderChanger';
 import { useMaskContext, usePreviewContext, useActiveObjectsContext, ActiveObjectsContext } from './fabricContext';
 import { useTranslations } from './hooks/useTranslations';
-// import clsx from 'clsx';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import BitCheckbox from './components/BitCheckbox';
@@ -12,8 +12,10 @@ import GitHubBrowser from './components/GitHubBrowser';
 import { updateMaskFilter } from './updateMaskFilter';
 import { getMaskData } from './getMaskData';
 import { makeStyles } from '@material-ui/core/styles';
+import { parseV1Mask, parseV2Mask, convertToV2 } from './convertMaskToV2';
+import { resizeMaskCanvas, updateMaskItems } from './resizeMaskCanvas';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   row: {
     display: 'flex',
     flexDirection: 'row',
@@ -22,9 +24,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
   }
-}));
+});
 
-const Controls = ({ maskCanvasComp, maskExportData }) => {
+const Controls = ({ maskCanvasComp, maskExportData, fileLoader }) => {
   const activeObject = useActiveObjectsContext()[0];
   const { t } = useTranslations();
   const { row, column } = useStyles();
@@ -70,6 +72,7 @@ const Controls = ({ maskCanvasComp, maskExportData }) => {
             <MaskExport data={maskExportData} />
           </div>
           <GitHubBrowser
+            fileLoader={fileLoader}
             repo="ShadowMasks_MiSTer"
             owner="MiSTer-devel"
           />
@@ -83,6 +86,19 @@ const WrappedControls = (props) => {
   const previewCanvas = usePreviewContext();
   const [activeObjects, setActiveObjects] = useState([]);
   const [maskExportData, setMaskExportData] = useState('');
+  const fileLoader = useCallback((url) => {
+    axios.get(url).then(({ data }) => {
+      let maskData;
+      if (!data.includes('v2')) {
+        maskData = convertToV2(parseV1Mask(data));
+      } else {
+        maskData = parseV2Mask(data);
+      }
+      resizeMaskCanvas(maskCanvas, maskData.maskWidth, maskData.maskHeight);
+      updateMaskItems(maskCanvas, maskData.parsedLines);
+      setMaskExportData(getMaskData(maskCanvas));
+    });
+  }, [maskCanvas]);
   useEffect(() => {
     const selectionHandler = () => {
       setActiveObjects([...maskCanvas.getActiveObjects()]);
@@ -113,7 +129,7 @@ const WrappedControls = (props) => {
   }, [maskCanvas, previewCanvas, setMaskExportData])
   return (
     <ActiveObjectsContext.Provider value={activeObjects}>
-      <Controls {...props} maskExportData={maskExportData} >
+      <Controls {...props} maskExportData={maskExportData} fileLoader={fileLoader} >
       </Controls>
     </ActiveObjectsContext.Provider>
   );

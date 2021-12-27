@@ -13,9 +13,9 @@ const MaskItem = fabric.util.createClass(fabric.Object, {
   // from 0 to 7
   bitValue: 4,
   // bright value from 0 to 15,
-  onIntensity: 8,
+  onIntensity: 2,
   // dark value from 0 to 15,
-  offIntensity: 2,
+  offIntensity: 6,
   // we need a truthy value but we are not going to use this.
   fill: 'not-used',
   lockMovementX: true,

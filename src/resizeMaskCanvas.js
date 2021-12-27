@@ -46,3 +46,17 @@ export const resizeMaskCanvas = (maskCanvas, newWidth, newHeight) => {
   maskCanvas.add(...maskCanvas.mask);
   maskCanvas.fire('object:propertySet');
 }
+
+export const updateMaskItems = (maskCanvas, maskLines) => {
+  for (let h = 0; h < maskLines.length; h++) {
+    const width = maskLines[h].length;
+    for (let w = 0; w < width; w++) {
+      const [bitValue, onIntensity, offIntensity] = maskLines[h][w].split('');
+      maskCanvas.mask[h * width + w].set({
+        bitValue: parseInt(bitValue, 10),
+        onIntensity: parseInt(onIntensity, 16),
+        offIntensity: parseInt(offIntensity, 16),
+      })
+    }
+  }
+}

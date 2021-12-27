@@ -5,14 +5,17 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme) => ({
-  container: {
+const useStyles = makeStyles({
+  root: {
     minHeight: '300px',
+    minWidth: '250px',
+  },
+  container: {
     margin: '0 16px',
   },
-}));
+});
 
-export const GitHubBrowser = ({ repo, owner }) => {
+export const GitHubBrowser = ({ repo, owner, fileLoader }) => {
   const [list, setList] = useState([]);
   const [path, setPath] = useState('Shadow_Masks');
   const [dataIsLoading, setDataIsLoading] = useState(false);
@@ -31,28 +34,31 @@ export const GitHubBrowser = ({ repo, owner }) => {
       return;
     }
     const item = list.find((item) => item.name === target.value) || {};
+    const itemName = encodeURI(item.name);
     if (item.type === 'dir') {
       const pathArray = path.split('/');
-      pathArray.push(encodeURI(item.name));
+      pathArray.push(itemName);
       setPath(pathArray.join('/'));
       setDataIsLoading(true);
     } else if (item.type === 'file') {
-      console.log('clicked file', item.name)
+      fileLoader(item.download_url);
     }
   }
+
   useEffect(() => {
     axios.get(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
       headers: {
         Accept: 'application/vnd.github.v3+json',
       },
     }).then(({ data }) => {
-      setList(data.sort((a,b) => (a.type === 'file' ? 1 : -1)));
       setDataIsLoading(false);
+      setList(data.sort((a, b) => (a.type === 'file' ? 1 : -1)));
     }).catch((e) => {
       console.error(e);
     });
   }, [repo, owner, path]);
-  return (<div>
+
+  return (<div className={classes.container}>
     <FormControl variant="outlined" >
       <InputLabel shrink htmlFor="select-multiple-native">
         Select a mask from MiSTer Devel
@@ -61,7 +67,7 @@ export const GitHubBrowser = ({ repo, owner }) => {
         multiple
         native
         classes={{
-          root: classes.container,
+          root: classes.root,
         }}
         value={[]}
         // @ts-ignore Typings are not considering `native`
