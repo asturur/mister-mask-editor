@@ -12,10 +12,9 @@ export const SizeControls = () => {
   const { t } = useTranslations();
 
   const onOkClick = useCallback(() => {
-    maskCanvas.maskWidth = parseInt(width.current.value, 10);
-    maskCanvas.maskHeight = parseInt(height.current.value, 10);
-    console.log(width.current, height.current)
-    resizeMaskCanvas(maskCanvas);
+    const newWidth = parseInt(width.current.value, 10);
+    const newHeight = parseInt(height.current.value, 10);
+    resizeMaskCanvas(maskCanvas, newWidth, newHeight);
   }, [maskCanvas]);
 
   useEffect(() => {

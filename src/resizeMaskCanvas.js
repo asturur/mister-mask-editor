@@ -1,22 +1,45 @@
 import { fabric } from 'fabric';
 
-export const resizeMaskCanvas = (maskCanvas) => {
-  const width = maskCanvas.maskWidth;
-  const height = maskCanvas.maskHeight;
+const DEFAULT_MASK = [
+  [4, 4, 2, 2, 1, 1],
+  [4, 4, 2, 2, 1, 1],
+  [2, 1, 1, 4, 4, 2],
+  [2, 1, 1, 4, 4, 2],
+];
+
+export const resizeMaskCanvas = (maskCanvas, newWidth, newHeight) => {
+  const currentWidth = maskCanvas.maskWidth || 0;
+  const currentHeight = maskCanvas.maskHeight || 0;
+  maskCanvas.maskWidth = newWidth;
+  maskCanvas.maskHeight = newHeight;
   const size = fabric.MaskItem.prototype.size;
   maskCanvas.setDimensions({
-    width: width * size,
-    height: height * size,
+    width: newWidth * size,
+    height: newHeight * size,
   });
-  const totalItems = width * height;
-  maskCanvas.mask = new Array(totalItems)
-  for (let h = 0; h < height; h++) {
-    for (let w = 0; w < width; w++) {
-      const item = new fabric.MaskItem({
-        top: h * size,
-        left: w * size,
-      });
-      maskCanvas.mask[h * width + w] = item;
+  const oldMask = maskCanvas.mask || [];
+  const totalItems = newWidth * newHeight;
+  // divide the oldMask in rows
+  const oldLines = new Array(currentHeight);
+  for (let i = 0; i < oldMask.length; i += currentWidth) {
+    oldLines[i / currentWidth] = oldMask.slice(i, i + currentWidth);
+  }
+  maskCanvas.mask = new Array(totalItems);
+  for (let h = 0; h < newHeight; h++) {
+    for (let w = 0; w < newWidth; w++) {
+      let item
+      if (w >= currentWidth || h >= currentHeight) {
+        // create new items
+        item = new fabric.MaskItem({
+          top: h * size,
+          left: w * size,
+          bitValue: DEFAULT_MASK?.[h]?.[w] ?? 4,
+        });
+      } else {
+        // or recycle old items
+        item = oldLines[h][w];
+      }
+      maskCanvas.mask[h * newWidth + w] = item;
     }
   }
   maskCanvas.clear();

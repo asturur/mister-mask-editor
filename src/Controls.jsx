@@ -8,12 +8,26 @@ import Box from '@material-ui/core/Box';
 import BitCheckbox from './components/BitCheckbox';
 import SizeControls from './components/SizeControls';
 import MaskExport from './components/MaskExport';
+import GitHubBrowser from './components/GitHubBrowser';
 import { updateMaskFilter } from './updateMaskFilter';
 import { getMaskData } from './getMaskData';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  row: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  column: {
+    display: 'flex',
+    flexDirection: 'column',
+  }
+}));
 
 const Controls = ({ maskCanvasComp, maskExportData }) => {
   const activeObject = useActiveObjectsContext()[0];
   const { t } = useTranslations();
+  const { row, column } = useStyles();
   return <Grid container spacing={2} >
       <Grid item xs={12} >
         <SizeControls />
@@ -49,11 +63,17 @@ const Controls = ({ maskCanvasComp, maskExportData }) => {
       </Grid>
       <Grid item xs={6}>
       </Grid>
-      <Grid item xs={4}>
-        {maskCanvasComp}
-      </Grid>
-      <Grid item xs={4}>
-        <MaskExport data={maskExportData} />
+      <Grid item xs={12}>
+        <div className={row}>
+          {maskCanvasComp}
+          <div className={column}>
+            <MaskExport data={maskExportData} />
+          </div>
+          <GitHubBrowser
+            repo="ShadowMasks_MiSTer"
+            owner="MiSTer-devel"
+          />
+        </div>
       </Grid>
     </Grid>
 };

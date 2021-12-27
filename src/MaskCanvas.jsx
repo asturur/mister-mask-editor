@@ -5,8 +5,7 @@ import { resizeMaskCanvas } from './resizeMaskCanvas';
 
 const useStyles = makeStyles(() => ({
   container: {
-    display: 'flex',
-    flexGrow: 1,
+    display: 'inline-flex',
     margin: '8px',
   },
 }));
@@ -21,9 +20,7 @@ export const MaskCanvas = ({ setFabricCanvas }) => {
         enableRetinaScaling: false,
         skipOffscreen: false,
       });
-      maskCanvas.maskWidth = 8;
-      maskCanvas.maskHeight = 8;
-      resizeMaskCanvas(maskCanvas);
+      resizeMaskCanvas(maskCanvas, 6, 4);
       setFabricCanvas(maskCanvas);
       window.maskCanvas = maskCanvas;
     }
@@ -31,6 +28,6 @@ export const MaskCanvas = ({ setFabricCanvas }) => {
 
   return (
     <div ref={containerRef} className={classes.container}>
-      <canvas ref={canvasRef} ></canvas>
+      <canvas key="maskCanvas" ref={canvasRef} ></canvas>
     </div>);
 }

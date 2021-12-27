@@ -36,7 +36,7 @@ export const PreviewCanvas = ({ setFabricCanvas }) => {
 
   return (
     <div ref={containerRef} className={classes.container}>
-      <canvas ref={canvasRef} ></canvas>
+      <canvas key="previewCanvas" ref={canvasRef} ></canvas>
     </div>);
 }
 
